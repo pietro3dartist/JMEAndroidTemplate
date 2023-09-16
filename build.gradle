@@ -1,10 +1,12 @@
 buildscript {
     repositories {
-        jcenter()
+        ext.kotlin_version = "1.5.0"
+        google()
+        mavenCentral()
     }
-    
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:8.1.0'
     }
 }
 
@@ -12,19 +14,20 @@ apply plugin: 'com.android.application'
 
 allprojects {
     repositories {
-        jcenter()
-	maven { url "https://jitpack.io" }
+        google()
+        mavenCentral()
+	    maven { url "https://maven.google.com/" }
     }
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 33
+    buildToolsVersion "33.0.1"
 
     defaultConfig {
         applicationId 'com.mycompany.mygame'
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode 1
         versionName "1"
     }
@@ -51,25 +54,29 @@ android {
             //signingConfig signingConfigs.release
         }
     }
+    if (project.android.hasProperty("namespace")) {
+        namespace("com.mycompany.mygame")
+    }
 }
 
 def jmerepo='org.jmonkeyengine'
-def jmeversion='JMEVERSION'
+def jmeversion='3.3.0-stable'
 
 dependencies {
-    compile (project(":game")) {
+
+    implementation (project(":game")) {
         exclude module: "jme3-lwjgl"
         exclude module: "jme3-desktop"
     }
-    
-    compile jmerepo + ':jme3-android:' + jmeversion
-    compile jmerepo + ':jme3-android-native:' + jmeversion
 
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    implementation jmerepo + ':jme3-android:' + jmeversion
+    implementation jmerepo + ':jme3-android-native:' + jmeversion
+
+    testImplementation 'junit:junit:4.13'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
 }
 
-task copyAssets {
+tasks.register('copyAssets') {
     delete 'src/main/assets'
     copy {
         from 'game/src/main/resources/_assets'

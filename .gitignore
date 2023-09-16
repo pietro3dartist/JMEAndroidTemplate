@@ -6,3 +6,4 @@
 /.nb-gradle-properties
 bootmonkey_backup.yml
 local.properties
+/game/build/
